@@ -57,6 +57,12 @@ public class JobEntity {
         @Column(name = "attempts", nullable = false)
         private int attempts;
 
+        @Column(name = "failure_reason")
+        private String failureReason;
+
+        @Column(name = "failed_at")
+        private Instant failedAt;
+
         @Column(name = "next_run_at", nullable = false)
         private Instant nextRunAt;
 

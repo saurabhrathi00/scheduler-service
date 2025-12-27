@@ -1,4 +1,4 @@
-package com.scheduler_service.models.dao;
+package com.scheduler_service.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

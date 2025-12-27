@@ -1,7 +1,7 @@
 package com.scheduler_service.producer.kafka;
 
 import com.scheduler_service.configuration.ServiceConfiguration;
-import com.scheduler_service.models.dao.JobEvent;
+import com.scheduler_service.models.JobEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;

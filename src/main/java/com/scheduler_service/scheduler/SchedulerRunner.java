@@ -1,7 +1,7 @@
 package com.scheduler_service.scheduler;
 
 import com.scheduler_service.models.dao.JobEntity;
-import com.scheduler_service.models.dao.JobEvent;
+import com.scheduler_service.models.JobEvent;
 import com.scheduler_service.producer.kafka.JobDispatcher;
 import com.scheduler_service.services.SchedulerService;
 import jakarta.annotation.PostConstruct;
@@ -47,16 +47,11 @@ public class SchedulerRunner {
     }
 
     private void runOnce() {
-
-        List<JobEntity> jobs =
-                schedulerService.claimReadyJobs(BATCH_SIZE);
-
+        List<JobEntity> jobs = schedulerService.claimReadyJobs(BATCH_SIZE);
         if (jobs.isEmpty()) {
             return;
         }
-
         log.info("Claimed {} job(s) for execution", jobs.size());
-
         for (JobEntity job : jobs) {
             dispatch(job);
         }

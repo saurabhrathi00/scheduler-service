@@ -1,6 +1,6 @@
 package com.scheduler_service.configuration;
 
-import com.scheduler_service.models.dao.JobEvent;
+import com.scheduler_service.models.JobEvent;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;

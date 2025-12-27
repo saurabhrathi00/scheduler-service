@@ -1,6 +1,6 @@
 package com.scheduler_service.producer.kafka;
 
-import com.scheduler_service.models.dao.JobEvent;
+import com.scheduler_service.models.JobEvent;
 
 public interface JobDispatcher {
 
