@@ -12,6 +12,7 @@ public class ServiceConfiguration {
 
     private JobDb jobDb;
     private Kafka kafka;
+    private Scheduler scheduler;
 
     @Data
     public static class JobDb {
@@ -37,6 +38,13 @@ public class ServiceConfiguration {
             private int retries;
             private int retryBackoffMs;
         }
+    }
+
+    @Data
+    public static class Scheduler {
+        private int batchSize;
+        private int maxSleepMs;
+        private int baseBackoffMs;
     }
 }
 

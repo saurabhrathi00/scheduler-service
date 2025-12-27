@@ -1,5 +1,6 @@
 package com.scheduler_service.scheduler;
 
+import com.scheduler_service.configuration.ServiceConfiguration;
 import com.scheduler_service.models.dao.JobEntity;
 import com.scheduler_service.models.JobEvent;
 import com.scheduler_service.producer.kafka.JobDispatcher;
@@ -20,11 +21,9 @@ public class SchedulerRunner {
 
     private final SchedulerService schedulerService;
     private final JobDispatcher jobEventProducer;
+    private final ServiceConfiguration serviceConfiguration;
 
-    private static final int BATCH_SIZE = 50;
-    private static final long MAX_SLEEP_MS = 30_000; // 30 sec cap
     private static final int MAX_INLINE_RETRIES = 3;
-    private static final long BASE_BACKOFF_MS = 300;
 
     @PostConstruct
     public void start() {
@@ -41,13 +40,13 @@ public class SchedulerRunner {
                 sleep(computeSleepMillis());
             } catch (Throwable t) {
                 t.printStackTrace();
-                sleep(MAX_SLEEP_MS);
+                sleep(serviceConfiguration.getScheduler().getMaxSleepMs());
             }
         }
     }
 
     private void runOnce() {
-        List<JobEntity> jobs = schedulerService.claimReadyJobs(BATCH_SIZE);
+        List<JobEntity> jobs = schedulerService.claimReadyJobs(serviceConfiguration.getScheduler().getBatchSize());
         if (jobs.isEmpty()) {
             return;
         }
@@ -88,7 +87,7 @@ public class SchedulerRunner {
                     );
                     return;
                 }
-                long backoff = BASE_BACKOFF_MS * retry;
+                long backoff = serviceConfiguration.getScheduler().getBaseBackoffMs() * retry;
                 log.warn(
                         "Retrying dispatch for jobId={} (retry={}, backoff={}ms)",
                         job.getJobId(),
@@ -106,7 +105,7 @@ public class SchedulerRunner {
         Instant nextRunAt = schedulerService.findNextRunTime();
 
         if (nextRunAt == null) {
-            return MAX_SLEEP_MS;
+            return serviceConfiguration.getScheduler().getMaxSleepMs();
         }
 
         long delayMs = Duration.between(
@@ -118,7 +117,7 @@ public class SchedulerRunner {
             return 0;
         }
 
-        return Math.min(delayMs, MAX_SLEEP_MS);
+        return Math.min(delayMs, serviceConfiguration.getScheduler().getMaxSleepMs());
     }
 
     private void sleep(long millis) {
